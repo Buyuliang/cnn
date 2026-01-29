@@ -1,0 +1,20 @@
+# Python 产物
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 项目特定
+data/
+checkpoints/
+*.ckpt
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# 预测结果（可选，如果需要忽略）
+predictions/
