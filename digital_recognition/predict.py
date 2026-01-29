@@ -72,19 +72,19 @@ def predict_single_image(model, image_path, device, image_size=256, save_output=
         # 创建可视化图像
         fig, axes = plt.subplots(1, 2, figsize=(12, 6))
         
-        # 原始图像
+        # 原始图像 (use English in plot to avoid CJK font warning)
         axes[0].imshow(img_array, cmap='gray')
-        axes[0].set_title(f'原始图像\n预测: 数字 {predicted_class} (置信度: {confidence*100:.2f}%)', 
+        axes[0].set_title(f'Original Image\nPredicted: digit {predicted_class} (conf: {confidence*100:.2f}%)',
                          fontsize=14, fontweight='bold')
         axes[0].axis('off')
-        
+
         # 概率分布条形图
         axes[1].bar(range(10), all_probs * 100, color='steelblue', alpha=0.7)
-        axes[1].bar(predicted_class, all_probs[predicted_class] * 100, 
-                   color='red', alpha=0.9, label=f'预测: {predicted_class}')
-        axes[1].set_xlabel('数字类别', fontsize=12)
-        axes[1].set_ylabel('概率 (%)', fontsize=12)
-        axes[1].set_title('分类概率分布', fontsize=14, fontweight='bold')
+        axes[1].bar(predicted_class, all_probs[predicted_class] * 100,
+                   color='red', alpha=0.9, label=f'Predicted: {predicted_class}')
+        axes[1].set_xlabel('Digit class', fontsize=12)
+        axes[1].set_ylabel('Probability (%)', fontsize=12)
+        axes[1].set_title('Classification probability', fontsize=14, fontweight='bold')
         axes[1].set_xticks(range(10))
         axes[1].set_ylim([0, 100])
         axes[1].grid(axis='y', alpha=0.3)
