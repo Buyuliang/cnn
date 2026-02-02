@@ -95,6 +95,27 @@ def validate(model, dataloader, criterion, device):
     return avg_loss, avg_accuracy
 
 
+def export_onnx(model, onnx_path, image_size=256, device=None):
+    """将模型导出为 ONNX 格式"""
+    model.eval()
+    if device is None:
+        device = next(model.parameters()).device
+    dummy_input = torch.randn(1, 1, image_size, image_size).to(device)
+    torch.onnx.export(
+        model,
+        dummy_input,
+        onnx_path,
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={
+            'input': {0: 'batch_size'},
+            'output': {0: 'batch_size'},
+        },
+        opset_version=12,
+    )
+    print(f"ONNX 模型已保存: {onnx_path}")
+
+
 def calculate_class_accuracy(model, dataloader, device, num_classes=10):
     """计算每个类别的准确率"""
     model.eval()
@@ -243,7 +264,9 @@ def main():
                 'best_val_acc': best_val_acc,
             }, best_model_path)
             print(f"保存最佳模型到 {best_model_path} (验证准确率: {val_acc:.2f}%)")
-        
+            best_onnx_path = os.path.join(args.save_dir, 'best_model.onnx')
+            export_onnx(model, best_onnx_path, args.image_size, device)
+
         # 定期保存检查点
         if (epoch + 1) % 10 == 0:
             checkpoint_path = os.path.join(args.save_dir, f'checkpoint_epoch_{epoch + 1}.pth')
@@ -279,7 +302,9 @@ def main():
         'best_val_acc': best_val_acc,
     }, final_model_path)
     print(f"\n训练完成！最终模型保存到 {final_model_path}")
-    
+    final_onnx_path = os.path.join(args.save_dir, 'final_model.onnx')
+    export_onnx(model, final_onnx_path, args.image_size, device)
+
     # 打印训练历史
     print("\n训练历史:")
     print(f"最佳验证准确率: {best_val_acc:.2f}%")

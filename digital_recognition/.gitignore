@@ -15,6 +15,9 @@ checkpoints/
 *.hdf5
 *.pkl
 *.pickle
+snapshot/
+*.onnx
+*.rknn
 
 # 预测结果（可选，如果需要忽略）
 predictions/
